@@ -5,9 +5,12 @@ var modbus = require('./modbus-stack');
 var netStream = require('net').Stream;
 var FUNCTION_CODES = modbus.FUNCTION_CODES;
 
+const DEFAULT_CLIENT_UID = 1;
+
 /* TCP MODBUS Client interface, as it's the most usual use-case. */
 function Client () {
   if (!(this instanceof Client)) return new Client();
+  this.uid = DEFAULT_CLIENT_UID;
   netStream.call(this);
 }
 require('util').inherits(Client, netStream);
@@ -19,6 +22,7 @@ module.exports = Client;
 //         instance is active at a time.
 Client.prototype.request = function() {
   var req = new modbus.ModbusRequestStack(this);
+  req.unitIdentifier = this.uid;
   req.request.apply(req, arguments);
   return req;
 }
@@ -28,6 +32,10 @@ Client.prototype.request = function() {
 Client.createClient = function(port, host) {
   var s = new Client();
   s.connect(port, host);
+  if (arguments.length > 2) {
+      // set optional UID argument
+      s.uid = arguments[2];
+  }
   return s;
 }
 
