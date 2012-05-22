@@ -17,6 +17,10 @@ const FUNCTION_CODE_LENGTH = 1;
 // the high-bit (0x80) set on it's function code.
 const EXCEPTION_BIT = 1 << 7;
 
+// The unit identifier to is usually important for
+// serial lines, not so much over TCP.
+const DEFAULT_MODBUS_UID = 1;
+
 // If it's an exception response, then the next byte will be one
 // these exception codes, indicating the reason for the failure.
 exports.EXCEPTION_CODES = {
@@ -79,9 +83,7 @@ exports.ModbusRequestStack = ModbusRequestStack;
 // The 'version' of the MODBUS protocol. Only version 0 is defined.
 ModbusRequestStack.prototype.protocolVersion = 0;
 
-// The unit identifier to request. This is usually important for
-// serial lines, not so much over TCP.
-ModbusRequestStack.prototype.unitIdentifier = 1;
+ModbusRequestStack.prototype.unitIdentifier = DEFAULT_MODBUS_UID;
 
 // Make a MODBUS request for a given 'function code'.
 ModbusRequestStack.prototype.request = function(functionCode) {
